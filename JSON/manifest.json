@@ -1,0 +1,20 @@
+{
+  "name": "Mixbox",
+  "short_name": "Mixbox",
+  "description": "Interactive web-based beatmaker and audio visualizer with multi-track mixing.",
+  "start_url": "../index.html",
+  "scope": "../",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0b0d14",
+  "theme_color": "#0b0d14",
+  "categories": ["music", "entertainment", "games"],
+  "icons": [
+    {
+      "src": "../Icon/beat.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

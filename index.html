@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#0b0d14">
+  <title>Mixbox</title>
+  <link rel="manifest" href="JSON/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="Css/style.css">
+</head>
+
+<body>
+
+  <div class="app">
+
+    <header class="topbar">
+      <div class="brand">
+        <span class="brand-mark">MIXBOX</span>
+        <span class="brand-sub">Your Dream Beat</span>
+      </div>
+
+      <nav class="chapters" id="chapters"></nav>
+
+      <div class="master-controls">
+        <button id="mixChaptersBtn" class="ghost-btn toggle-btn" title="Mix chapters">🔀 Mix Chapters</button>
+        <button id="stopAllBtn" class="ghost-btn" title="Stop all">■ Stop</button>
+
+        <!-- Save and Load Buttons -->
+        <button id="saveMixBtn" class="ghost-btn" title="Save Mix">💾 Save</button>
+        <button id="loadMixBtn" class="ghost-btn" title="Load Mixes">📂 Load</button>
+
+        <label class="volume" title="Master Volume">
+          <span>Volume</span>
+          <input type="range" id="masterVolume" min="0" max="1" step="0.01" value="0.85">
+        </label>
+      </div>
+    </header>
+
+    <main class="stage-wrap" id="stageWrap">
+      <div class="stage-lighting" id="stageLighting">
+        <span class="beam beam-1"></span>
+        <span class="beam beam-2"></span>
+        <span class="beam beam-3"></span>
+        <span class="beam beam-4"></span>
+      </div>
+
+      <div class="chapter-intro" id="chapterIntro">
+        <span class="chapter-intro-title" id="chapterIntroTitle"></span>
+      </div>
+
+      <div class="cycle-ring" id="cycleRing" title="Current bar progress">
+        <svg viewBox="0 0 64 64">
+          <circle class="ring-track" cx="32" cy="32" r="28"></circle>
+          <circle class="ring-progress" id="ringProgress" cx="32" cy="32" r="28"></circle>
+        </svg>
+      </div>
+
+      <div class="stage" id="stage"></div>
+      
+      <!-- Interactive Reactive Floor -->
+      <div class="stage-floor" id="stageFloor"></div>
+      <p class="stage-hint" id="stageHint">Drag a character from the tray below, or just click it</p>
+    </main>
+
+    <section class="tray" id="tray">
+      <div class="tray-loading" id="trayLoading">Loading sounds…</div>
+    </section>
+
+  </div>
+
+  <!-- Modal Backdrop -->
+  <div id="modalBackdrop" class="modal-backdrop"></div>
+
+  <!-- Save Modal -->
+  <div id="saveModal" class="modal">
+    <div class="modal-header">
+      <h3>💾 Save Your Mix</h3>
+      <button class="modal-close-btn" data-close="saveModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-field">
+        <label for="mixNameInput">Mix Title</label>
+        <div class="input-row">
+          <input type="text" id="mixNameInput" placeholder="e.g. Midnight Groove" maxlength="32">
+          <button id="confirmSaveBtn" class="action-btn primary-btn">Save Mix</button>
+        </div>
+      </div>
+
+      <div class="modal-divider"><span>OR SHARE AS URL</span></div>
+
+      <div class="modal-field">
+        <label>Exportable Link</label>
+        <button id="modalShareBtn" class="action-btn share-btn full-width">🔗 Copy Shareable URL</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Modal -->
+  <div id="loadModal" class="modal">
+    <div class="modal-header">
+      <h3>📂 My Saved Mixes</h3>
+      <button class="modal-close-btn" data-close="loadModal">&times;</button>
+    </div>
+    <div class="modal-body">
+      <!-- Saved Mixes List Container -->
+      <div class="saved-mixes-list" id="savedMixesList"></div>
+
+      <div class="modal-divider"><span>OR IMPORT FROM LINK</span></div>
+
+      <div class="modal-field">
+        <label for="pasteUrlInput">Paste Mix URL or Code</label>
+        <div class="input-row">
+          <input type="text" id="pasteUrlInput" placeholder="Paste link or mix code here...">
+          <button id="confirmLoadUrlBtn" class="action-btn primary-btn">Load Link</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast" class="toast"></div>
+
+  <script src="assets/chapters.js"></script>
+  <script src="JS/script.js"></script>
+</body>
+
+</html>
