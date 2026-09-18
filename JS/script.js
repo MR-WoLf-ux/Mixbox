@@ -1,10 +1,5 @@
 // ============================================================
-// MIXBOX — script.js
-// Audio engine (Web Audio API) + Interactive Stage Lighting
-// Features: Multi-band frequency analyzer (Bass, Mid, Treble),
-//           Smart dynamic slots (strictly keeps 8 slots unless 100% full),
-//           In-place Drag & Drop replacement, quantized sync,
-//           A/B variant chain, slot Mute/Solo, Save/Load, URL share
+// MIXBOX — Copyright 2026 by Mr-Wolf-UX. All rights reserved.
 // ============================================================
 
 const CATEGORY_LABELS = {
@@ -14,6 +9,19 @@ const CATEGORY_LABELS = {
     chorus: "Chorus",
     voice: "Voice",
     bonus: "Bonus",
+};
+
+// ---------- SVG Icon Library (inline, no external deps) ----------
+const ICONS = {
+    warning: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>`,
+    success: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+    trash:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>`,
+    clock:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>`,
+    save:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>`,
+    link:    `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>`,
+    play:    `<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>`,
+    close:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>`,
+    music:   `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>`,
 };
 
 const MIN_SLOTS = 8;
@@ -1188,11 +1196,24 @@ const savedMixesList = document.getElementById("savedMixesList");
 const pasteUrlInput = document.getElementById("pasteUrlInput");
 const confirmLoadUrlBtn = document.getElementById("confirmLoadUrlBtn");
 
-function showToast(msg, duration = 2800) {
+function showToast(msg, type = "info", duration = 2800) {
     if (!toastEl) return;
-    toastEl.textContent = msg;
+    const iconMap = {
+        info:    "",
+        success: ICONS.success,
+        warning: ICONS.warning,
+        error:   ICONS.warning,
+        trash:   ICONS.trash,
+        loading: ICONS.clock,
+        save:    ICONS.save,
+        link:    ICONS.link,
+    };
+    const icon = iconMap[type] || "";
+    toastEl.innerHTML = `${icon ? `<span class="toast-icon">${icon}</span>` : ""}<span>${msg}</span>`;
+    toastEl.dataset.type = type;
     toastEl.classList.add("show");
-    setTimeout(() => toastEl.classList.remove("show"), duration);
+    clearTimeout(toastEl._tid);
+    toastEl._tid = setTimeout(() => toastEl.classList.remove("show"), duration);
 }
 
 function openModal(modal) {
@@ -1279,7 +1300,7 @@ function decodeMixData(base64Str) {
 
 async function applyMixState(state) {
     if (!state || !Array.isArray(state.slots)) {
-        showToast("⚠️ Invalid mix data!");
+        showToast("Invalid mix data!", "warning");
         return false;
     }
 
@@ -1337,7 +1358,7 @@ async function applyMixState(state) {
 
 saveMixBtn.addEventListener("click", () => {
     if (mixer.activeBySlot.size === 0) {
-        showToast("⚠️ Add some sounds before saving!");
+        showToast("Add some sounds before saving!", "warning");
         return;
     }
     const currentMixes = getSavedMixes();
@@ -1369,7 +1390,7 @@ confirmSaveBtn.addEventListener("click", () => {
     setSavedMixes(currentMixes);
 
     closeModals();
-    showToast(`💾 "${name}" saved!`);
+    showToast(`"${name}" saved!`, "save");
 });
 
 modalShareBtn.addEventListener("click", async () => {
@@ -1382,7 +1403,7 @@ modalShareBtn.addEventListener("click", async () => {
 
     try {
         await navigator.clipboard.writeText(url.toString());
-        showToast("🔗 Share link copied to clipboard!");
+        showToast("Share link copied to clipboard!", "link");
     } catch (e) {
         prompt("Copy this link to share your mix:", url.toString());
     }
@@ -1410,23 +1431,31 @@ function renderSavedMixesList() {
                 } sounds • ${item.date || "Saved"}</span>
             </div>
             <div class="mix-actions">
-                <button class="item-btn item-play" title="Play mix">▶ Play</button>
-                <button class="item-btn item-del" title="Delete mix">✕</button>
+                <button class="item-btn item-play" title="Play mix">
+                    <svg class="item-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                    <span>Play</span>
+                </button>
+                <button class="item-btn item-del" title="Delete mix">
+                    <svg class="item-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round">
+                        <line x1="18" y1="6" x2="6" y2="18"/>
+                        <line x1="6" y1="6" x2="18" y2="18"/>
+                    </svg>
+                </button>
             </div>
         `;
 
         row.querySelector(".item-play").addEventListener("click", async () => {
             closeModals();
-            showToast(`⏳ Loading "${item.name}"…`);
+            showToast(`Loading "${item.name}"…`, "loading");
             await applyMixState(item.state);
-            showToast(`✅ "${item.name}" is playing!`);
+            showToast(`"${item.name}" is playing!`, "success");
         });
 
         row.querySelector(".item-del").addEventListener("click", () => {
             const updated = getSavedMixes().filter((_, i) => i !== index);
             setSavedMixes(updated);
             renderSavedMixesList();
-            showToast("🗑️ Mix deleted");
+            showToast("Mix deleted", "trash");
         });
 
         savedMixesList.appendChild(row);
@@ -1442,7 +1471,7 @@ loadMixBtn.addEventListener("click", () => {
 confirmLoadUrlBtn.addEventListener("click", async () => {
     const input = pasteUrlInput.value.trim();
     if (!input) {
-        showToast("⚠️ Please paste a link or code!");
+        showToast("Please paste a link or code!", "warning");
         return;
     }
 
@@ -1456,11 +1485,11 @@ confirmLoadUrlBtn.addEventListener("click", async () => {
     const state = decodeMixData(code);
     if (state) {
         closeModals();
-        showToast("⏳ Loading mix from URL…");
+        showToast("Loading mix from URL…", "loading");
         const ok = await applyMixState(state);
-        if (ok) showToast("✅ Mix loaded!");
+        if (ok) showToast("Mix loaded!", "success");
     } else {
-        showToast("⚠️ Invalid mix link/code!");
+        showToast("Invalid mix link/code!", "warning");
     }
 });
 
@@ -1474,8 +1503,12 @@ function checkForUrlMix() {
             const banner = document.createElement("div");
             banner.className = "shared-banner";
             banner.innerHTML = `
-                <span>🎵 A shared mix is ready!</span>
-                <button id="playSharedBtn">▶ Load & Play</button>
+                <span class="banner-icon">${ICONS.music}</span>
+                <span>A shared mix is ready!</span>
+                <button id="playSharedBtn">
+                    <svg class="btn-icon" viewBox="0 0 24 24" fill="currentColor"><polygon points="6 4 20 12 6 20 6 4"/></svg>
+                    <span>Load & Play</span>
+                </button>
             `;
             document.body.appendChild(banner);
 
@@ -1483,9 +1516,9 @@ function checkForUrlMix() {
                 .getElementById("playSharedBtn")
                 .addEventListener("click", async () => {
                     banner.remove();
-                    showToast("⏳ Loading shared mix…");
+                    showToast("Loading shared mix…", "loading");
                     await applyMixState(state);
-                    showToast("✅ Enjoy the beat!");
+                    showToast("Enjoy the beat!", "success");
                 });
         }
     }
