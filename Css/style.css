@@ -72,6 +72,14 @@ body {
 
 .brand {
     display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 16px;
+    line-height: 1.1;
+}
+
+.brand-text {
+    display: flex;
     flex-direction: column;
     line-height: 1.1;
 }
@@ -92,6 +100,29 @@ body {
     color: var(--text-muted);
     margin-top: 2px;
 }
+
+/* ---------- Brand tagline (headphones hint) ---------- */
+
+.brand-tagline {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--text-muted);
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    padding-left: 16px;
+    border-left: 1px solid var(--line);
+}
+
+.headphone-icon {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+    color: var(--text-muted);
+}
+
+/* ---------- Chapter tabs ---------- */
 
 .chapters {
     display: flex;
@@ -184,7 +215,6 @@ body {
     overflow: hidden;
 }
 
-/* هاله نوری ملایم کف صحنه بدون هیچ فلش سفیدی */
 .stage-wrap::before {
     content: "";
     position: absolute;
@@ -282,7 +312,6 @@ body {
     50% { transform: rotate(24deg); }
 }
 
-/* خط نئونی ملایم کف صحنه */
 .stage-floor {
     position: relative;
     width: min(940px, 92%);
@@ -375,7 +404,6 @@ body {
     --amp: 0;
 }
 
-/* نور نئونی ملایم اختصاصی زیر پای هر کاراکتر */
 .slot.filled::after {
     content: "";
     position: absolute;
@@ -1024,7 +1052,6 @@ body {
     opacity: 0.85;
 }
 
-/* عنوان مودال‌ها */
 .modal-header h3 {
     display: inline-flex;
     align-items: center;
@@ -1038,7 +1065,6 @@ body {
     flex-shrink: 0;
 }
 
-/* دکمه‌های لیست میکس‌ها */
 .item-icon {
     width: 12px;
     height: 12px;
@@ -1052,7 +1078,6 @@ body {
     gap: 5px;
 }
 
-/* Toast با آیکون */
 .toast {
     display: inline-flex;
     align-items: center;
@@ -1073,7 +1098,6 @@ body {
     height: 100%;
 }
 
-/* رنگ آیکون Toast بر اساس نوع پیام */
 .toast[data-type="success"] .toast-icon { color: var(--effect); }
 .toast[data-type="warning"] .toast-icon { color: var(--voice); }
 .toast[data-type="error"]   .toast-icon { color: var(--beat); }
@@ -1086,7 +1110,6 @@ body {
     to { transform: rotate(360deg); }
 }
 
-/* بنر Share */
 .banner-icon {
     display: inline-flex;
     align-items: center;
@@ -1112,7 +1135,6 @@ body {
     height: 12px;
 }
 
-/* استایل دکمه play داخل لیست میکس‌ها */
 .item-play {
     color: var(--effect);
     border-color: rgba(53, 224, 194, 0.35);
