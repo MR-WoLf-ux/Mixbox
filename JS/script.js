@@ -1531,15 +1531,15 @@ renderStage();
 switchChapter(currentChapterId);
 setTimeout(checkForUrlMix, 300);
 
-if ("serviceWorker" in navigator) {
-    window.addEventListener("load", () => {
-        navigator.serviceWorker
-            .register("./service-worker.js")
-            .then((reg) =>
-                console.log("Mixbox Service Worker Registered!", reg.scope)
-            )
-            .catch((err) =>
-                console.error("Service Worker registration failed:", err)
-            );
-    });
-}
+// if ("serviceWorker" in navigator) {
+//     window.addEventListener("load", () => {
+//         navigator.serviceWorker
+//             .register("./service-worker.js")
+//             .then((reg) =>
+//                 console.log("Mixbox Service Worker Registered!", reg.scope)
+//             )
+//             .catch((err) =>
+//                 console.error("Service Worker registration failed:", err)
+//             );
+//     });
+// }
