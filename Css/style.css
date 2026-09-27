@@ -1271,7 +1271,7 @@ body {
     }
 }
 
-/* Mobile Screens (Clean 4x2 Slot Grid & Zero-Scroll Controls) */
+/* Mobile Screens (Zero-Scroll Controls with Full Visible Text) */
 @media (max-width: 600px) {
     :root {
         --slot-w: 76px;
@@ -1298,29 +1298,52 @@ body {
         font-size: 12px;
     }
 
-    /* Master controls optimization in mobile */
+    /* Master controls: Perfectly balanced to fit buttons + labels + volume */
     .master-controls {
-        gap: 5px;
+        gap: 4px;
         align-items: center;
         justify-content: space-between;
+        width: 100%;
+        padding-top: 6px;
     }
 
     .ghost-btn {
-        padding: 6px 8px;
+        padding: 5px 6px;
+        font-size: 11px;
+        gap: 4px;
     }
 
-    /* Hide text on buttons in mobile to save space */
+    .ghost-btn .btn-icon {
+        width: 12px;
+        height: 12px;
+    }
+
     .btn-text {
-        display: none;
+        display: inline-block;
+        font-size: 11px;
+        letter-spacing: -0.2px;
     }
 
+    /* Volume container adjusts dynamically without forcing horizontal overflow */
     .volume {
+        display: flex;
+        align-items: center;
         gap: 4px;
         padding-left: 2px;
+        flex: 1;
+        min-width: 0;
+        justify-content: flex-end;
+    }
+
+    .volume-icon {
+        width: 13px;
+        height: 13px;
     }
 
     .volume input[type="range"] {
-        width: clamp(45px, 14vw, 65px);
+        width: 100%;
+        min-width: 38px;
+        max-width: 58px;
     }
 
     .stage-wrap {
@@ -1380,7 +1403,7 @@ body {
     }
 }
 
-/* Compact Mobile (iPhone SE, Small Androids <= 375px) */
+/* Compact Mobile (<= 375px) */
 @media (max-width: 375px) {
     :root {
         --slot-w: 70px;
@@ -1400,11 +1423,33 @@ body {
     }
 
     .ghost-btn {
-        padding: 5px 6px;
+        padding: 4px 5px;
+        font-size: 10px;
+        gap: 3px;
+    }
+
+    .ghost-btn .btn-icon {
+        width: 11px;
+        height: 11px;
+    }
+
+    .btn-text {
+        font-size: 10px;
+    }
+
+    .volume {
+        gap: 3px;
+        padding-left: 0;
+    }
+
+    .volume-icon {
+        width: 12px;
+        height: 12px;
     }
 
     .volume input[type="range"] {
-        width: 44px;
+        min-width: 30px;
+        max-width: 44px;
     }
 }
 
